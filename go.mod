@@ -1,3 +1,3 @@
-module github.com/maragudk/is
+module maragu.dev/is
 
 go 1.19
