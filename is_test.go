@@ -6,7 +6,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/maragudk/is"
+	"maragu.dev/is"
 )
 
 func TestNil(t *testing.T) {
