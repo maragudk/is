@@ -240,7 +240,7 @@ func TestTrue(t *testing.T) {
 		is.True(t, mt.helperCalled)
 		is.True(t, strings.Contains(mt.message, `Not true`))
 		is.True(t, strings.Contains(mt.message, "expected 123 to be valid"))
-		is.Equal(t, true, mt.failed)
+		is.True(t, mt.failed)
 	})
 }
 
