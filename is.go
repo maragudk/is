@@ -6,54 +6,79 @@ import (
 
 type t interface {
 	Helper()
-	Fatal(args ...any)
-	Fatalf(format string, args ...any)
+	Log(args ...any)
+	Logf(format string, args ...any)
+	FailNow()
 }
 
-func Nil[T any](t t, v *T) {
+func Nil[T any](t t, v *T, messages ...any) {
 	t.Helper()
 
 	if v != nil {
-		t.Fatalf(`Expected nil, but got "%v" (type %T)`, *v, v)
+		t.Logf(`Expected nil, but got "%v" (type %T)`, *v, v)
+		if len(messages) > 0 {
+			t.Log(messages...)
+		}
+		t.FailNow()
 	}
 }
 
-func NotNil[T any](t t, v *T) {
+func NotNil[T any](t t, v *T, messages ...any) {
 	t.Helper()
 
 	if v == nil {
-		t.Fatalf(`Expected not nil, but got nil (type %T)`, v)
+		t.Logf(`Expected not nil, but got nil (type %T)`, v)
+		if len(messages) > 0 {
+			t.Log(messages...)
+		}
+		t.FailNow()
 	}
 }
 
-func Error(t t, expected, actual error) {
+func Error(t t, expected, actual error, messages ...any) {
 	t.Helper()
 
 	if !errors.Is(actual, expected) {
-		t.Fatalf(`Expected "%v" (type %T), but got "%v" (type %T)`, expected, expected, actual, actual)
+		t.Logf(`Expected "%v" (type %T), but got "%v" (type %T)`, expected, expected, actual, actual)
+		if len(messages) > 0 {
+			t.Log(messages...)
+		}
+		t.FailNow()
 	}
 }
 
-func NotError(t t, err error) {
+func NotError(t t, err error, messages ...any) {
 	t.Helper()
 
 	if err != nil {
-		t.Fatalf(`Expected nil error, but got "%v" (type %T)`, err, err)
+		t.Logf(`Expected nil error, but got "%v" (type %T)`, err, err)
+		if len(messages) > 0 {
+			t.Log(messages...)
+		}
+		t.FailNow()
 	}
 }
 
-func Equal[T comparable](t t, expected, actual T) {
+func Equal[T comparable](t t, expected, actual T, messages ...any) {
 	t.Helper()
 
 	if expected != actual {
-		t.Fatalf(`Expected "%v", but got "%v" (type %T)`, expected, actual, actual)
+		t.Logf(`Expected "%v", but got "%v" (type %T)`, expected, actual, actual)
+		if len(messages) > 0 {
+			t.Log(messages...)
+		}
+		t.FailNow()
 	}
 }
 
-func True(t t, expression bool) {
+func True(t t, expression bool, messages ...any) {
 	t.Helper()
 
 	if !expression {
-		t.Fatal("Not true")
+		t.Log("Not true")
+		if len(messages) > 0 {
+			t.Log(messages...)
+		}
+		t.FailNow()
 	}
 }
