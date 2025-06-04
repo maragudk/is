@@ -71,6 +71,27 @@ func Equal[T comparable](t t, expected, actual T, messages ...any) {
 	}
 }
 
+func EqualSlice[S ~[]E, E comparable](t t, expected, actual S, messages ...any) {
+	t.Helper()
+
+	if len(expected) != len(actual) {
+		t.Logf(`Expected slice of length %v, but got %v`, len(expected), len(actual))
+		if len(messages) > 0 {
+			t.Log(messages...)
+		}
+		t.FailNow()
+	}
+	for i := range expected {
+		if expected[i] != actual[i] {
+			t.Logf(`Expected "%v", but got "%v" (type %T) at index %v`, expected[i], actual[i], actual[i], i)
+			if len(messages) > 0 {
+				t.Log(messages...)
+			}
+			t.FailNow()
+		}
+	}
+}
+
 func True(t t, expression bool, messages ...any) {
 	t.Helper()
 
