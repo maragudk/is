@@ -200,6 +200,70 @@ func TestEqual(t *testing.T) {
 	})
 }
 
+func TestEqualSlice(t *testing.T) {
+	t.Run("succeeds when equal", func(t *testing.T) {
+		mt := &mockT{}
+
+		is.EqualSlice(mt, []string{"a", "b", "c"}, []string{"a", "b", "c"})
+
+		is.True(t, mt.helperCalled)
+		is.Equal(t, "", mt.message)
+		is.True(t, !mt.failed)
+	})
+
+	t.Run("succeeds when both empty", func(t *testing.T) {
+		mt := &mockT{}
+
+		is.EqualSlice(mt, []string{}, []string{})
+
+		is.True(t, mt.helperCalled)
+		is.Equal(t, "", mt.message)
+		is.True(t, !mt.failed)
+	})
+
+	t.Run("fails when different lengths", func(t *testing.T) {
+		mt := &mockT{}
+
+		is.EqualSlice(mt, []string{"a", "b"}, []string{"a", "b", "c"})
+
+		is.True(t, mt.helperCalled)
+		is.Equal(t, `Expected slice of length 2, but got 3`, strings.TrimSpace(mt.message))
+		is.True(t, mt.failed)
+	})
+
+	t.Run("fails when different values", func(t *testing.T) {
+		mt := &mockT{}
+
+		is.EqualSlice(mt, []string{"a", "b", "c"}, []string{"a", "x", "c"})
+
+		is.True(t, mt.helperCalled)
+		is.Equal(t, `Expected "b", but got "x" (type string) at index 1`, strings.TrimSpace(mt.message))
+		is.True(t, mt.failed)
+	})
+
+	t.Run("fails with custom message on length mismatch", func(t *testing.T) {
+		mt := &mockT{}
+
+		is.EqualSlice(mt, []int{1, 2}, []int{1, 2, 3}, "custom message")
+
+		is.True(t, mt.helperCalled)
+		is.True(t, strings.Contains(mt.message, `Expected slice of length 2, but got 3`))
+		is.True(t, strings.Contains(mt.message, "custom message"))
+		is.True(t, mt.failed)
+	})
+
+	t.Run("fails with custom message on value mismatch", func(t *testing.T) {
+		mt := &mockT{}
+
+		is.EqualSlice(mt, []int{1, 2, 3}, []int{1, 4, 3}, "custom message")
+
+		is.True(t, mt.helperCalled)
+		is.True(t, strings.Contains(mt.message, `Expected "2", but got "4" (type int) at index 1`))
+		is.True(t, strings.Contains(mt.message, "custom message"))
+		is.True(t, mt.failed)
+	})
+}
+
 func TestTrue(t *testing.T) {
 	t.Run("succeeds when true", func(t *testing.T) {
 		mt := &mockT{}
